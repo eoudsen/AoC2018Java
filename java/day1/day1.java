@@ -5,7 +5,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class day1 {
@@ -20,30 +22,33 @@ public class day1 {
         return null;
     }
 
-    public static Integer part1(final List<Integer> input) {
-        var last = input.get(0);
-        var counter = 0;
-        for (var val : input.subList(1, input.size())) {
-            if (val > last) {
-                counter++;
-            }
-            last = val;
+    public static Integer part1(final List<String> input) {
+        var start = 0;
+        for (var entry : input) {
+             start += Integer.parseInt(entry);
         }
-        return counter;
+        return start;
     }
 
-    public static Integer part2(final List<Integer> input) {
-        var windows = new ArrayList<Integer>();
-        for (var i = 0; i < input.size() - 2; i++) {
-            windows.add(input.subList(i, i+3).stream().reduce(0, Integer::sum));
+    public static Integer part2(final List<String> input) {
+        var currentFrequency = 0;
+        final Set<Integer> frequencies = new HashSet<>();
+        while (true) {
+            for (var entry : input) {
+                currentFrequency += Integer.parseInt(entry);
+                var currentSize = frequencies.size();
+                frequencies.add(currentFrequency);
+                if (currentSize == frequencies.size()) {
+                    return currentFrequency;
+                }
+            }
         }
-        return part1(windows);
     }
 
     public static void main(String... args) {
         var fileContent = getFileContent("java/day1/input.txt");
-        var intInput = fileContent.stream().map(Integer::parseInt).collect(Collectors.toList());
-        System.out.println(part1(intInput));
-        System.out.println(part2(intInput));
+//        var intInput = fileContent.stream().map(Integer::parseInt).collect(Collectors.toList());
+        System.out.println(part1(fileContent));
+        System.out.println(part2(fileContent));
     }
 }
