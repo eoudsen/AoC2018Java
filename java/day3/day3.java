@@ -53,7 +53,48 @@ public class day3 {
     }
 
     private static Integer part2(final List<String> input) {
+        final Set<Location> duplicatSet = new HashSet<>();
+        final Set<Location> places = new HashSet<>();
+        for (final var claim : input) {
+            Matcher matcher = CLAIM_PATTERN.matcher(claim);
+            if (matcher.matches()) {
+                int xsize = Integer.parseInt(matcher.group("xsize"));
+                int ysize = Integer.parseInt(matcher.group("ysize"));
+                int xoffset = Integer.parseInt(matcher.group("xoffset"));
+                int yoffset = Integer.parseInt(matcher.group("yoffset"));
+                final List<Location> locations = determineLocations(xoffset, yoffset, xsize, ysize);
+                for (final var loc : locations) {
+                    if (places.contains(loc)) {
+                        duplicatSet.add(loc);
+                    }
+                    places.add(loc);
+                }
+            }
+            else {
+                System.out.println("Everything broken!!!!");
+            }
+        }
 
+        CLAIM: for (final var claim : input) {
+            Matcher matcher = CLAIM_PATTERN.matcher(claim);
+            if (matcher.matches()) {
+                int claimInt = Integer.parseInt(matcher.group("claim"));
+                int xsize = Integer.parseInt(matcher.group("xsize"));
+                int ysize = Integer.parseInt(matcher.group("ysize"));
+                int xoffset = Integer.parseInt(matcher.group("xoffset"));
+                int yoffset = Integer.parseInt(matcher.group("yoffset"));
+                final List<Location> locations = determineLocations(xoffset, yoffset, xsize, ysize);
+                for (final var loc : locations) {
+                    if (duplicatSet.contains(loc)) {
+                        continue CLAIM;
+                    }
+                }
+                return claimInt;
+            }
+            else {
+                System.out.println("Everything broken!!!!");
+            }
+        }
         return null;
     }
 
